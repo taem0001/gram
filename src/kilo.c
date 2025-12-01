@@ -1,6 +1,6 @@
 #include "../include/util.h"
 
-// init
+struct editorConfig E;
 
 void initEditor(void) {
 	E.cursorx = 0;
