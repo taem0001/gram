@@ -46,7 +46,8 @@ enum editorKey {
 
 enum editorHighlight {
 	HL_NORMAL = 0,
-	HL_NUMBER
+	HL_NUMBER,
+	HL_MATCH
 };
 
 // data
@@ -86,6 +87,7 @@ struct abuf {
 
 void editorUpdateSyntax(erow *);
 int editorSyntaxToColor(int);
+int is_seperator(int);
 
 void editorFindCallBack(char *, int);
 void editorFind(void);

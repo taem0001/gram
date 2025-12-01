@@ -113,7 +113,7 @@ int getCursorPosition(int *rows, int *cols) {
 	}
 
 	while (i < sizeof(buf) - 1) {
-		if (read(STDOUT_FILENO, &buf[i], 1) != 1) {
+		if (read(STDIN_FILENO, &buf[i], 1) != 1) {
 			break;
 		}
 		if (buf[i] == 'R') {
