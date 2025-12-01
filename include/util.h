@@ -1,0 +1,121 @@
+#ifndef UTIL_H
+#define UTIL_H
+
+#define _DEFAULT_SOURCE
+#define _BSD_SOURCE
+#define _GNU_SOURCE
+
+// includes
+
+#include <ctype.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <termios.h>
+#include <time.h>
+#include <unistd.h>
+
+// defines
+
+#define KILO_VERSION "0.0.1"
+#define KILO_TAB_STOP 8
+#define KILO_QUIT_TIMES 3
+
+#define CTRL_KEY(k) ((k) & 0x1f)
+
+#define ABUF_INIT                                                                                                      \
+	{ NULL, 0 }
+
+// data
+
+enum editorKey {
+	BACKSPACE = 127,
+	ARROW_LEFT = 1000,
+	ARROW_RIGHT,
+	ARROW_UP,
+	ARROW_DOWN,
+	DEL_KEY,
+	HOME_KEY,
+	END_KEY,
+	PAGE_UP,
+	PAGE_DOWN
+};
+
+typedef struct erow {
+	int size;
+	int rsize;
+	char *chars;
+	char *render;
+} erow;
+
+struct editorConfig {
+	int cursorx, cursory;
+	int renderx;
+	int rowoff;
+	int coloff;
+	int screenrows;
+	int screencols;
+	int numrows;
+	erow *row;
+	int dirty;
+	char *filename;
+	char statusmsg[80];
+	time_t statusmsg_time;
+	struct termios orig_termios;
+};
+
+extern struct editorConfig E;
+
+struct abuf {
+	char *b;
+	int len;
+};
+
+// prototypes
+
+void editorFind(void);
+
+char *editorPrompt(char *);
+void editorMoveCursor(int);
+void editorProcessKeyPress(void);
+
+void abAppend(struct abuf *, const char *, int);
+void abFree(struct abuf *);
+void editorScroll(void);
+void editorDrawRows(struct abuf *);
+void editorDrawStatusBar(struct abuf *);
+void editorDrawMessageBar(struct abuf *);
+void editorRefreshScreen(void);
+void editorSetStatusMessage(const char *, ...);
+
+int editorRowCursorxToRenderx(erow *, int);
+int editorRowRenderxToCursorx(erow *, int);
+void editorUpdateRow(erow *);
+void editorInsertRow(int, char *, size_t);
+void editorFreeRow(erow *);
+void editorDelRow(int);
+void editorRowInsertChar(erow *, int, int);
+void editorRowAppendString(erow *, char *, size_t);
+void editorRowDelChar(erow *, int);
+
+char *editorRowsToString(int *);
+void editorOpen(char *);
+void editorSave(void);
+
+void die(const char *);
+void disableRawMode(void);
+void enableRawMode(void);
+int editorReadKey(void);
+int getCursorPosition(int *, int *);
+int getWindowSize(int *, int *);
+
+void editorInsertChar(int);
+void editorInsertNewline(void);
+void editorDelChar(void);
+
+#endif // !UTIL_H
