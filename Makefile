@@ -2,44 +2,48 @@
 CC := gcc
 CFLAGS := -Wall -Wextra -std=c11 -Iinclude
 
-# Folders
+# Directories
 SRC_DIR := src
 INC_DIR := include
+OBJ_DIR := build
 BIN_DIR := bin
 
 # Output executable
 TARGET := $(BIN_DIR)/kilo
 
-# Find all .c files in src/
+# All source files
 SRCS := $(wildcard $(SRC_DIR)/*.c)
 
-# Convert each .c into a .o in the SAME folder
-OBJS := $(SRCS:.c=.o)
+# Turn src/file.c → build/file.o
+OBJS := $(SRCS:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
 
 # Default rule
 all: $(TARGET)
 
-# Link objects into final binary
+# Link all objects
 $(TARGET): $(OBJS) | $(BIN_DIR)
 	$(CC) $(CFLAGS) -o $@ $(OBJS)
 
-# Compile each .c → .o
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.c $(INC_DIR)/*.h
+# Compile .c → .o inside build/
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
-# Create bin folder if missing
+# Create necessary directories
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
-# Clean build
+# Clean object files
 clean:
-	rm -f $(SRC_DIR)/*.o $(TARGET)
+	rm -rf $(OBJ_DIR)
 
-# Clean everything
+# Clean everything including executable
 fclean: clean
 	rm -rf $(BIN_DIR)
 
-# Rebuild everything
+# Rebuild from scratch
 re: fclean all
 
 .PHONY: all clean fclean re
