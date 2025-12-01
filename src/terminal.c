@@ -47,7 +47,7 @@ int editorReadKey(void) {
 		char seq[3];
 
 		if (read(STDIN_FILENO, &seq[0], 1) != 1 || read(STDIN_FILENO, &seq[1], 1) != 1) {
-			return -1;
+			return '\x1b';
 		}
 
 		if (seq[0] == '[') {

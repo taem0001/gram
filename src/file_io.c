@@ -42,7 +42,7 @@ void editorOpen(char *filename) {
 
 void editorSave(void) {
 	if (E.filename == NULL) {
-		E.filename = editorPrompt("Save as %s (ESC to cancel)");
+		E.filename = editorPrompt("Save as %s (ESC to cancel)", NULL);
 		if (E.filename == NULL) {
 			editorSetStatusMessage("Save aborted");
 			return;

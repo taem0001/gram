@@ -31,8 +31,6 @@
 #define ABUF_INIT                                                                                                      \
 	{ NULL, 0 }
 
-// data
-
 enum editorKey {
 	BACKSPACE = 127,
 	ARROW_LEFT = 1000,
@@ -46,11 +44,19 @@ enum editorKey {
 	PAGE_DOWN
 };
 
+enum editorHighlight {
+	HL_NORMAL = 0,
+	HL_NUMBER
+};
+
+// data
+
 typedef struct erow {
 	int size;
 	int rsize;
 	char *chars;
 	char *render;
+	unsigned char *hl;
 } erow;
 
 struct editorConfig {
@@ -78,9 +84,13 @@ struct abuf {
 
 // prototypes
 
+void editorUpdateSyntax(erow *);
+int editorSyntaxToColor(int);
+
+void editorFindCallBack(char *, int);
 void editorFind(void);
 
-char *editorPrompt(char *);
+char *editorPrompt(char *, void (*)(char *, int));
 void editorMoveCursor(int);
 void editorProcessKeyPress(void);
 
