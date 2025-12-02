@@ -9,7 +9,7 @@ OBJ_DIR := build
 BIN_DIR := bin
 
 # Output executable
-TARGET := $(BIN_DIR)/kilo
+TARGET := $(BIN_DIR)/gram
 
 # All source files
 SRCS := $(wildcard $(SRC_DIR)/*.c)
