@@ -31,6 +31,10 @@
 #define ABUF_INIT                                                                                                      \
 	{ NULL, 0 }
 
+#define HL_HIGHLIGHT_NUMBERS (1 << 0)
+#define HL_HIGHLIGHT_STRINGS (1 << 1)
+#define HLDB_ENTRIES (sizeof(HLDB) / sizeof(HLDB[0]))
+
 enum editorKey {
 	BACKSPACE = 127,
 	ARROW_LEFT = 1000,
@@ -46,11 +50,23 @@ enum editorKey {
 
 enum editorHighlight {
 	HL_NORMAL = 0,
+	HL_COMMENT,
+	HL_KEYWORD1,
+	HL_KEYWORD2,
+	HL_STRING,
 	HL_NUMBER,
 	HL_MATCH
 };
 
 // data
+
+struct editorSyntax {
+	char *filetype;
+	char **filematch;
+	char **keywords;
+	char *singleline_comment_start;
+	int flags;
+};
 
 typedef struct erow {
 	int size;
@@ -73,6 +89,7 @@ struct editorConfig {
 	char *filename;
 	char statusmsg[80];
 	time_t statusmsg_time;
+	struct editorSyntax *syntax;
 	struct termios orig_termios;
 };
 
@@ -83,11 +100,18 @@ struct abuf {
 	int len;
 };
 
+// filetypes
+
+extern char *C_HL_extensions[];
+extern char *C_HL_keywords[];
+extern struct editorSyntax HLDB[];
+
 // prototypes
 
 void editorUpdateSyntax(erow *);
 int editorSyntaxToColor(int);
 int is_seperator(int);
+void editorSelectSyntaxHighlight(void);
 
 void editorFindCallBack(char *, int);
 void editorFind(void);
