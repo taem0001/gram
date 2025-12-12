@@ -9,6 +9,7 @@ void initEditor(void) {
 	E.rowoff = 0;
 	E.coloff = 0;
 	E.numrows = 0;
+	E.vimmode = NORMAL;
 	E.row = NULL;
 	E.dirty = 0;
 	E.filename = NULL;

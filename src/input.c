@@ -84,77 +84,135 @@ void editorProcessKeyPress(void) {
 
 	int c = editorReadKey();
 
-	switch (c) {
-	case '\r':
-		editorInsertNewline();
-		break;
+	if (E.vimmode == INSERT) {
+		switch (c) {
+		case '\r':
+			editorInsertNewline();
+			break;
 
-	case CTRL_KEY('q'):
-		if (E.dirty && quit_times > 0) {
-			editorSetStatusMessage("WARNING!!! File has unsaved changes. "
-								   "Press Ctrl-Q %d more times to quit.",
-								   quit_times);
-			quit_times--;
-			return;
+		case HOME_KEY:
+			E.cursorx = 0;
+			break;
+		case END_KEY:
+			if (E.cursory < E.numrows)
+				E.cursorx = E.row[E.cursory].size;
+			break;
+
+		case BACKSPACE:
+		case CTRL_KEY('h'):
+		case DEL_KEY:
+			if (c == DEL_KEY)
+				editorMoveCursor(ARROW_RIGHT);
+			editorDelChar();
+			break;
+
+		case PAGE_UP: {
+			E.cursory = E.rowoff;
+			int times = E.screenrows;
+			while (times--)
+				editorMoveCursor(ARROW_UP);
+		} break;
+		case PAGE_DOWN: {
+			E.cursory = E.rowoff + E.screenrows - 1;
+			if (E.cursory > E.numrows)
+				E.cursory = E.numrows;
+			int times = E.screenrows;
+			while (times--)
+				editorMoveCursor(ARROW_DOWN);
+		} break;
+
+		case ARROW_UP:
+		case ARROW_DOWN:
+		case ARROW_RIGHT:
+		case ARROW_LEFT:
+			editorMoveCursor(c);
+			break;
+
+		case CTRL_KEY('l'):
+		case '\x1b':
+			E.vimmode = NORMAL;
+			break;
+
+		default:
+			editorInsertChar(c);
+			break;
 		}
-		write(STDOUT_FILENO, "\x1b[2J", 4);
-		write(STDOUT_FILENO, "\x1b[H", 3);
-		exit(0);
-		break;
+	} else if (E.vimmode == NORMAL) {
+		switch (c) {
+		case '\r':
+			editorInsertNewline();
+			break;
 
-	case CTRL_KEY('s'):
-		editorSave();
-		break;
+		case CTRL_KEY('q'):
+			if (E.dirty && quit_times > 0) {
+				editorSetStatusMessage("WARNING!!! File has unsaved changes. "
+									   "Press Ctrl-Q %d more times to quit.",
+									   quit_times);
+				quit_times--;
+				return;
+			}
+			write(STDOUT_FILENO, "\x1b[2J", 4);
+			write(STDOUT_FILENO, "\x1b[H", 3);
+			exit(0);
+			break;
 
-	case HOME_KEY:
-		E.cursorx = 0;
-		break;
-	case END_KEY:
-		if (E.cursory < E.numrows)
-			E.cursorx = E.row[E.cursory].size;
-		break;
+		case CTRL_KEY('s'):
+			editorSave();
+			break;
 
-	case CTRL_KEY('f'):
-		editorFind();
-		break;
+		case HOME_KEY:
+			E.cursorx = 0;
+			break;
+		case END_KEY:
+			if (E.cursory < E.numrows)
+				E.cursorx = E.row[E.cursory].size;
+			break;
 
-	case BACKSPACE:
-	case CTRL_KEY('h'):
-	case DEL_KEY:
-		if (c == DEL_KEY)
-			editorMoveCursor(ARROW_RIGHT);
-		editorDelChar();
-		break;
+		case CTRL_KEY('f'):
+			editorFind();
+			break;
 
-	case PAGE_UP: {
-		E.cursory = E.rowoff;
-		int times = E.screenrows;
-		while (times--)
+		case PAGE_UP: {
+			E.cursory = E.rowoff;
+			int times = E.screenrows;
+			while (times--)
+				editorMoveCursor(ARROW_UP);
+		} break;
+		case PAGE_DOWN: {
+			E.cursory = E.rowoff + E.screenrows - 1;
+			if (E.cursory > E.numrows)
+				E.cursory = E.numrows;
+			int times = E.screenrows;
+			while (times--)
+				editorMoveCursor(ARROW_DOWN);
+		} break;
+
+		case ARROW_UP:
+		case ARROW_DOWN:
+		case ARROW_RIGHT:
+		case ARROW_LEFT:
+			editorMoveCursor(c);
+			break;
+		case 'k':
 			editorMoveCursor(ARROW_UP);
-	} break;
-	case PAGE_DOWN: {
-		E.cursory = E.rowoff + E.screenrows - 1;
-		if (E.cursory > E.numrows)
-			E.cursory = E.numrows;
-		int times = E.screenrows;
-		while (times--)
+			break;
+		case 'j':
 			editorMoveCursor(ARROW_DOWN);
-	} break;
+			break;
+		case 'l':
+			editorMoveCursor(ARROW_RIGHT);
+			break;
+		case 'h':
+			editorMoveCursor(ARROW_LEFT);
+			break;
 
-	case ARROW_UP:
-	case ARROW_DOWN:
-	case ARROW_RIGHT:
-	case ARROW_LEFT:
-		editorMoveCursor(c);
-		break;
+		case 'i':
+			E.vimmode = INSERT;
+			break;
 
-	case CTRL_KEY('l'):
-	case '\x1b':
-		break;
-
-	default:
-		editorInsertChar(c);
-		break;
+		default:
+			break;
+		}
 	}
 
 	quit_times = GRAM_QUIT_TIMES;

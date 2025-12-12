@@ -59,6 +59,8 @@ enum editorHighlight {
 	HL_MATCH
 };
 
+enum vimModes { NORMAL = 8, INSERT };
+
 // data
 
 struct editorSyntax {
@@ -89,6 +91,7 @@ struct editorConfig {
 	int screenrows;
 	int screencols;
 	int numrows;
+	int vimmode;
 	erow *row;
 	int dirty;
 	char *filename;
