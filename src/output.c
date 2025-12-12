@@ -115,8 +115,17 @@ void editorDrawStatusBar(struct abuf *ab) {
 	abAppend(ab, "\x1b[7m", 4);
 
 	char status[80], rstatus[80];
-	int len = snprintf(status, sizeof(status), "%.20s - %d lines %s", E.filename ? E.filename : "[No Name]", E.numrows,
-					   E.dirty ? "(modified)" : "");
+	char *mode;
+
+	if (E.vimmode == NORMAL) {
+		mode = "NORMAL";
+	}
+	if (E.vimmode == INSERT) {
+		mode = "INSERT";
+	}
+
+	int len = snprintf(status, sizeof(status), "%.20s - %d lines %s - %s", E.filename ? E.filename : "[No Name]", E.numrows,
+					   E.dirty ? "(modified)" : "", mode);
 	int rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d", E.syntax ? E.syntax->filetype : "No filetype",
 						E.cursory + 1, E.numrows);
 
