@@ -80,7 +80,7 @@ void editorMoveCursor(int key) {
 }
 
 void editorProcessKeyPress(void) {
-	static int quit_times = KILO_QUIT_TIMES;
+	static int quit_times = GRAM_QUIT_TIMES;
 
 	int c = editorReadKey();
 
@@ -157,5 +157,5 @@ void editorProcessKeyPress(void) {
 		break;
 	}
 
-	quit_times = KILO_QUIT_TIMES;
+	quit_times = GRAM_QUIT_TIMES;
 }

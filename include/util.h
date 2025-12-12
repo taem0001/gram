@@ -22,9 +22,9 @@
 
 // defines
 
-#define KILO_VERSION "0.0.1"
-#define KILO_TAB_STOP 8
-#define KILO_QUIT_TIMES 3
+#define GRAM_VERSION "0.0.1"
+#define GRAM_TAB_STOP 8
+#define GRAM_QUIT_TIMES 3
 
 #define CTRL_KEY(k) ((k) & 0x1f)
 
@@ -51,6 +51,7 @@ enum editorKey {
 enum editorHighlight {
 	HL_NORMAL = 0,
 	HL_COMMENT,
+	HL_MLCOMMENT,
 	HL_KEYWORD1,
 	HL_KEYWORD2,
 	HL_STRING,
@@ -65,15 +66,19 @@ struct editorSyntax {
 	char **filematch;
 	char **keywords;
 	char *singleline_comment_start;
+	char *multiline_comment_start;
+	char *multiline_comment_end;
 	int flags;
 };
 
 typedef struct erow {
+	int idx;
 	int size;
 	int rsize;
 	char *chars;
 	char *render;
 	unsigned char *hl;
+	int hl_open_comment;
 } erow;
 
 struct editorConfig {

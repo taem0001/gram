@@ -41,7 +41,7 @@ void editorDrawRows(struct abuf *ab) {
 		if (filerow >= E.numrows) {
 			if (i == E.screenrows / 3 && E.numrows == 0) {
 				char welcome[80];
-				int welcomelen = snprintf(welcome, sizeof(welcome), "Kilo editor -- version %s", KILO_VERSION);
+				int welcomelen = snprintf(welcome, sizeof(welcome), "Gram editor -- version %s", GRAM_VERSION);
 				if (welcomelen > E.screencols) {
 					welcomelen = E.screencols;
 				}
