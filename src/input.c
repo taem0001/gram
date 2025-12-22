@@ -66,6 +66,7 @@ void editorMoveCursor(int key) {
 
 	row = (E.cursory >= E.numrows) ? NULL : &E.row[E.cursory];
 	int rowlen = row ? row->size : 0;
+
 	if (E.cursorx > rowlen) {
 		E.cursorx = rowlen;
 	}

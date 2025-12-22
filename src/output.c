@@ -17,22 +17,20 @@ void abFree(struct abuf *ab) { free(ab->b); }
 
 void editorScroll(void) {
 	E.renderx = 0;
-	if (E.cursory < E.numrows) {
+	if (E.cursory < E.numrows)
 		E.renderx = editorRowCursorxToRenderx(&E.row[E.cursory], E.cursorx);
-	}
 
-	if (E.cursory < E.rowoff) {
+	if (E.cursory < E.rowoff)
 		E.rowoff = E.cursory;
-	}
-	if (E.cursory >= E.rowoff + E.screenrows) {
+
+	if (E.cursory >= E.rowoff + E.screenrows)
 		E.rowoff = E.cursory - E.screenrows + 1;
-	}
-	if (E.renderx < E.coloff) {
+
+	if (E.renderx < E.coloff)
 		E.coloff = E.renderx;
-	}
-	if (E.renderx >= E.coloff + E.screencols) {
+
+	if (E.renderx >= E.coloff + E.screencols)
 		E.coloff = E.renderx - E.screencols + 1;
-	}
 }
 
 void editorDrawRows(struct abuf *ab) {
@@ -124,8 +122,8 @@ void editorDrawStatusBar(struct abuf *ab) {
 		mode = "INSERT";
 	}
 
-	int len = snprintf(status, sizeof(status), "%.20s - %d lines %s - %s", E.filename ? E.filename : "[No Name]", E.numrows,
-					   E.dirty ? "(modified)" : "", mode);
+	int len = snprintf(status, sizeof(status), "%.20s - %d lines %s - %s", E.filename ? E.filename : "[No Name]",
+					   E.numrows, E.dirty ? "(modified)" : "", mode);
 	int rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d", E.syntax ? E.syntax->filetype : "No filetype",
 						E.cursory + 1, E.numrows);
 
