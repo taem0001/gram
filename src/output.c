@@ -112,7 +112,7 @@ void editorDrawRows(struct abuf *ab) {
 void editorDrawStatusBar(struct abuf *ab) {
 	abAppend(ab, "\x1b[7m", 4);
 
-	char status[80], rstatus[80];
+	char status[80], mstatus[10], rstatus[80];
 	char *mode;
 
 	if (E.vimmode == NORMAL) {
@@ -122,8 +122,9 @@ void editorDrawStatusBar(struct abuf *ab) {
 		mode = "INSERT";
 	}
 
-	int len = snprintf(status, sizeof(status), "%.20s - %d lines %s - %s", E.filename ? E.filename : "[No Name]",
-					   E.numrows, E.dirty ? "(modified)" : "", mode);
+	int len = snprintf(status, sizeof(status), "%.20s %s", E.filename ? E.filename : "[No Name]",
+					   E.dirty ? "(modified)" : "");
+	int mlen = snprintf(mstatus, sizeof(mstatus), "%s", mode);
 	int rlen = snprintf(rstatus, sizeof(rstatus), "%s | %d/%d", E.syntax ? E.syntax->filetype : "No filetype",
 						E.cursory + 1, E.numrows);
 
@@ -133,7 +134,10 @@ void editorDrawStatusBar(struct abuf *ab) {
 	abAppend(ab, status, len);
 
 	while (len < E.screencols) {
-		if (E.screencols - len == rlen) {
+		if (len == E.screencols / 2 - mlen / 2) {
+			abAppend(ab, mstatus, mlen);
+			len += mlen;
+		} else if (E.screencols - len == rlen) {
 			abAppend(ab, rstatus, rlen);
 			break;
 		} else {
