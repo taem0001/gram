@@ -28,6 +28,7 @@ void editorFindCallBack(char *query, int key) {
 
 	if (last_match == -1)
 		direction = 1;
+
 	int current = last_match;
 	for (int i = 0; i < E.numrows; i++) {
 		current += direction;

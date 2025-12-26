@@ -1,5 +1,4 @@
 #include "../include/util.h"
-#include <ctype.h>
 
 void abAppend(struct abuf *ab, const char *s, int len) {
 	char *new = realloc(ab->b, ab->len + len);
@@ -69,8 +68,13 @@ void editorDrawRows(struct abuf *ab) {
 			unsigned char *hl = &E.row[filerow].hl[E.coloff];
 			int current_color = -1;
 
+			// Row numbers
+			char rowidx[6];
+			int rowidxlen = snprintf(rowidx, sizeof(rowidx), "%d", E.row[filerow].idx + 1);
+			abAppend(ab, rowidx, rowidxlen);
+
 			for (int i = 0; i < len; i++) {
-				if (iscntrl(c[i])) {
+				if (iscntrl(c[i])) { // Control characters
 					char sym = (c[i] <= 26) ? '@' + c[i] : '?';
 					abAppend(ab, "\x1b[7m", 4);
 					abAppend(ab, &sym, 1);
@@ -81,14 +85,14 @@ void editorDrawRows(struct abuf *ab) {
 						int clen = snprintf(buf, sizeof(buf), "\x1b[%dm", current_color);
 						abAppend(ab, buf, clen);
 					}
-				} else if (hl[i] == HL_NORMAL) {
+				} else if (hl[i] == HL_NORMAL) { // Normal text
 					if (current_color != -1) {
 						abAppend(ab, "\x1b[39m", 5);
 						current_color = -1;
 					}
 
 					abAppend(ab, &c[i], 1);
-				} else {
+				} else { // Anything else
 					int color = editorSyntaxToColor(hl[i]);
 					if (color != current_color) {
 						current_color = color;
