@@ -69,8 +69,8 @@ void editorDrawRows(struct abuf *ab) {
 			int current_color = -1;
 
 			// Row numbers
-			char rowidx[6];
-			int rowidxlen = snprintf(rowidx, sizeof(rowidx), "%d", E.row[filerow].idx + 1);
+			char rowidx[12];
+			int rowidxlen = snprintf(rowidx, sizeof(rowidx), "%4d ", E.row[filerow].idx + 1);
 			abAppend(ab, rowidx, rowidxlen);
 
 			for (int i = 0; i < len; i++) {
